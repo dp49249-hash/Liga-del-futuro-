@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Liga del Futuro - Misión ABP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(3, 30, 70, 0.88), rgba(7, 75, 120, 0.9)),
+        radial-gradient(circle at top right, #4da3ff, transparent 40%),
+        #071f3d;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 15px;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 28px;
+      padding: 35px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .group-name {
+      color: #ffd45c;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 5vw, 42px);
+      margin-top: 6px;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: #dbeeff;
+      line-height: 1.5;
+    }
+
+    .score-box {
+      min-width: 130px;
+      background: rgba(255,255,255,0.12);
+      padding: 15px;
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 13px;
+      color: #cfe4ff;
+    }
+
+    #score {
+      margin-top: 5px;
+      font-size: 25px;
+      font-weight: bold;
+      color: #ffd45c;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 25px 0 35px;
+    }
+
+    #progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ffd45c, #ffb300);
+      transition: width 0.4s ease;
+    }
+
+    .level {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .level-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .level-title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .question {
+      font-size: 20px;
+      line-height: 1.55;
+      margin: 25px 0;
+    }
+
+    .options {
+      display: grid;
+      gap: 14px;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 16px;
+      line-height: 1.4;
+      padding: 17px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .correct {
+      background: rgba(40, 190, 110, 0.35) !important;
+      border-color: #53dc98 !important;
+    }
+
+    .incorrect {
+      background: rgba(220, 60, 60, 0.35) !important;
+      border-color: #ff7777 !important;
+    }
+
+    #feedback {
+      margin-top: 25px;
+    }
+
+    .feedback-card {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.12);
+      line-height: 1.5;
+    }
+
+    .feedback-card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .next-btn,
+    .restart-btn {
+      margin-top: 18px;
+      border: none;
+      background: #ffd45c;
+      color: #0a315a;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 14px 22px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .next-btn:hover,
+    .restart-btn:hover {
+      background: #ffe48c;
+    }
+
+    .result {
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .trophy {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    .result h2 {
+      font-size: 34px;
+      margin-bottom: 12px;
+    }
+
+    .final-score {
+      font-size: 40px;
+      font-weight: bold;
+      color: #ffd45c;
+      margin: 20px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 18px;
+      background: rgba(255,212,92,0.15);
+      border: 1px solid #ffd45c;
+      border-radius: 999px;
+      color: #ffe58c;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #bcd5ed;
+    }
+
+    @media (max-width: 650px) {
+      .game-container {
+        padding: 23px;
+      }
+
+      .top-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .score-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-container">
+
+    <div class="top-bar">
+
+      <div>
+        <div class="group-name">Liga del Futuro</div>
+
+        <h1>🚀 Misión ABP</h1>
+
+        <p class="subtitle">
+          Supera los cinco niveles del Aprendizaje Basado en Proyectos
+          y demuestra que puedes convertir un problema real en una solución.
+        </p>
+      </div>
+
+      <div class="score-box">
+        <div class="score-label">PUNTUACIÓN</div>
+        <div id="score">0 ⭐</div>
+      </div>
+
+    </div>
+
+    <div class="progress-container">
+      <div id="progress"></div>
+    </div>
+
+    <section id="game"></section>
+
+    <section id="feedback"></section>
+
+    <footer>
+      Recurso gamificado • Liga del Futuro • Aprendizaje Basado en Proyectos
+    </footer>
+
+  </main>
+
+
+<script>
+
+const questions = [
+
+  {
+    icon: "💡",
+    level: "Nivel 1 · Identifica el reto",
+
+    question:
+      "En una institución educativa se observa una gran cantidad de residuos. ¿Cuál sería el mejor punto de partida para desarrollar un proyecto mediante ABP?",
+
+    options: [
+      "Memorizar una definición sobre reciclaje.",
+      "Plantear una pregunta retadora sobre cómo reducir los residuos de la institución.",
+      "Realizar únicamente un examen sobre contaminación."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "El Aprendizaje Basado en Proyectos inicia con un problema, reto o pregunta significativa que orienta el trabajo de los estudiantes."
+  },
+
+  {
+    icon: "🔎",
+    level: "Nivel 2 · Investiga",
+
+    question:
+      "Después de identificar el problema de los residuos, ¿qué deberían hacer los estudiantes?",
+
+    options: [
+      "Investigar las causas, recopilar información y analizar datos.",
+      "Esperar que el docente les proporcione todas las respuestas.",
+      "Escoger una solución inmediatamente sin investigar."
+    ],
+
+    correct: 0,
+
+    explanation:
+      "En ABP, los estudiantes investigan, consultan fuentes, recopilan información y toman decisiones fundamentadas."
+  },
+
+  {
+    icon: "🤝",
+    level: "Nivel 3 · Trabaja en equipo",
+
+    question:
+      "Durante el desarrollo del proyecto, ¿cuál es principalmente el rol del docente?",
+
+    options: [
+      "Realizar el proyecto por los estudiantes.",
+      "Guiar, orientar, acompañar y ofrecer retroalimentación.",
+      "No participar en ninguna etapa."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "El docente actúa como facilitador y orientador, mientras los estudiantes desarrollan un papel activo en su propio aprendizaje."
+  },
+
+  {
+    icon: "🛠️",
+    level: "Nivel 4 · Construye una solución",
+
+    question:
+      "Luego de investigar el problema, ¿cuál sería un producto adecuado para demostrar el aprendizaje?",
+
+    options: [
+      "Diseñar una campaña y propuesta para reducir los residuos utilizando los datos investigados.",
+      "Copiar información de Internet.",
+      "Decir verbalmente que comprendieron el tema."
+    ],
+
+    correct: 0,
+
+    explanation:
+      "El ABP busca generar un producto o evidencia concreta que permita responder al problema o reto planteado."
+  },
+
+  {
+    icon: "🏆",
+    level: "Nivel 5 · Presenta y reflexiona",
+
+    question:
+      "¿Cuál sería la mejor manera de finalizar el proyecto?",
+
+    options: [
+      "Guardar el proyecto sin compartirlo.",
+      "Presentar la propuesta, recibir retroalimentación y reflexionar sobre lo aprendido.",
+      "Realizar únicamente una prueba de memoria."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "La presentación del producto y la reflexión permiten valorar tanto los resultados obtenidos como el proceso de aprendizaje."
+  }
+
+];
+
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+
+const game = document.getElementById("game");
+const feedback = document.getElementById("feedback");
+const scoreElement = document.getElementById("score");
+const progress = document.getElementById("progress");
+
+
+function loadQuestion() {
+
+  answered = false;
+  feedback.innerHTML = "";
+
+  if (currentQuestion >= questions.length) {
+    showResults();
+    return;
+  }
+
+  const q = questions[currentQuestion];
+
+  progress.style.width =
+    (currentQuestion / questions.length) * 100 + "%";
+
+
+  let optionsHTML = "";
+
+  q.options.forEach((option, index) => {
+
+    optionsHTML += `
+      <button
+        class="option"
+        data-index="${index}"
+      >
+        ${String.fromCharCode(65 + index)}. ${option}
+      </button>
+    `;
+
+  });
+
+
+  game.innerHTML = `
+
+    <div class="level">
+
+      <div class="level-icon">
+        ${q.icon}
+      </div>
+
+      <div>
+
+        <div style="color:#ffd45c; font-size:13px; font-weight:bold;">
+          MISIÓN ${currentQuestion + 1} DE ${questions.length}
+        </div>
+
+        <div class="level-title">
+          ${q.level}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="question">
+      ${q.question}
+    </div>
+
+
+    <div class="options">
+      ${optionsHTML}
+    </div>
+
+  `;
+
+
+  document.querySelectorAll(".option").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+      checkAnswer(
+        Number(this.dataset.index),
+        this
+      );
+
+    });
+
+  });
+
+}
+
+
+function checkAnswer(selected, button) {
+
+  if (answered) return;
+
+  answered = true;
+
+  const q = questions[currentQuestion];
+
+  const buttons =
+    document.querySelectorAll(".option");
+
+  buttons.forEach(btn => {
+    btn.disabled = true;
+  });
+
+
+  if (selected === q.correct) {
+
+    score += 100;
+
+    button.classList.add("correct");
+
+    scoreElement.textContent =
+      score + " ⭐";
+
+    feedback.innerHTML = `
+
+      <div class="feedback-card">
+
+        <strong>
+          ✅ ¡Respuesta correcta! +100 estrellas
+        </strong>
+
+        ${q.explanation}
+
+      </div>
+
+    `;
+
+  } else {
+
+    button.classList.add("incorrect");
+
+    buttons[q.correct]
+      .classList.add("correct");
+
+    feedback.innerHTML = `
+
+      <div class="feedback-card">
+
+        <strong>
+          💡 Sigue aprendiendo
+        </strong>
+
+        ${q.explanation}
+
+      </div>
+
+    `;
+
+  }
+
+
+  const nextButton =
+    document.createElement("button");
+
+  nextButton.className = "next-btn";
+
+
+  if (currentQuestion === questions.length - 1) {
+
+    nextButton.textContent =
+      "Ver resultado 🏆";
+
+  } else {
+
+    nextButton.textContent =
+      "Siguiente misión →";
+
+  }
+
+
+  nextButton.addEventListener(
+    "click",
+    function() {
+
+      currentQuestion++;
+
+      loadQuestion();
+
+    }
+  );
+
+
+  feedback.appendChild(nextButton);
+
+}
+
+
+function showResults() {
+
+  progress.style.width = "100%";
+
+  let message = "";
+
+  if (score === 500) {
+
+    message =
+      "¡Excelente! Dominas las etapas esenciales del ABP.";
+
+  } else if (score >= 300) {
+
+    message =
+      "¡Muy buen trabajo! Has completado exitosamente la misión.";
+
+  } else {
+
+    message =
+      "Has completado la misión. Puedes intentarlo nuevamente para mejorar tu puntuación.";
+
+  }
+
+
+  game.innerHTML = `
+
+    <div class="result">
+
+      <div class="trophy">
+        🏆
+      </div>
+
+      <h2>
+        ¡Misión completada!
+      </h2>
+
+      <p>
+        ${message}
+      </p>
+
+      <div class="final-score">
+        ${score} / 500 ⭐
+      </div>
+
+      <div class="badge">
+        🎖️ Explorador ABP
+      </div>
+
+      <br>
+
+      <button
+        class="restart-btn"
+        id="restart"
+      >
+        🔄 Jugar nuevamente
+      </button>
+
+    </div>
+
+  `;
+
+
+  feedback.innerHTML = "";
+
+
+  document
+    .getElementById("restart")
+    .addEventListener(
+      "click",
+      restartGame
+    );
+
+}
+
+
+function restartGame() {
+
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
+
+  scoreElement.textContent =
+    "0 ⭐";
+
+  loadQuestion();
+
+}
+
+
+loadQuestion();
+
+</script>
+
+
+</body>
+</html>
