@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liga del Futuro - Misión ABP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(3, 30, 70, 0.92), rgba(7, 75, 120, 0.94)),
+        radial-gradient(circle at top right, #4da3ff, transparent 40%),
+        #071f3d;
+      color: white;
+      padding: 30px 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 950px;
+      margin: auto;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 26px;
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    .gold {
+      color: #ffd45c;
+    }
+
+    .subtitle {
+      color: #dbeeff;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .start-box {
+      max-width: 620px;
+      margin: 20px auto 0;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-size: 17px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #bdd3e8;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary {
+      margin-top: 18px;
+      background: #ffd45c;
+      color: #0a315a;
+    }
+
+    .primary:hover {
+      background: #ffe58d;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,.10);
+      padding: 12px 16px;
+      border-radius: 14px;
+      min-width: 140px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      color: #ffd45c;
+      margin-top: 3px;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,.13);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 20px 0 30px;
+    }
+
+    #progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg,#ffd45c,#ffb300);
+      transition: .3s;
+    }
+
+    .question {
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 20px 0;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      background: rgba(255,255,255,.10);
+      color: white;
+      border: 1px solid rgba(255,255,255,.22);
+      padding: 16px;
+      border-radius: 14px;
+    }
+
+    .option:hover {
+      background: rgba(255,255,255,.18);
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .correct {
+      background: rgba(35,180,100,.35) !important;
+      border-color: #55dd97 !important;
+    }
+
+    .incorrect {
+      background: rgba(220,60,60,.35) !important;
+      border-color: #ff7777 !important;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      background: rgba(255,255,255,.10);
+      padding: 16px;
+      border-radius: 14px;
+      line-height: 1.5;
+    }
+
+    .result {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .big-score {
+      font-size: 42px;
+      color: #ffd45c;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 25px 0;
+    }
+
+    .podium-card {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: 18px 12px;
+      text-align: center;
+    }
+
+    .podium-card .medal {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .podium-card .name {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .podium-card .data {
+      color: #dbeeff;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 560px;
+    }
+
+    th, td {
+      padding: 13px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      text-align: center;
+    }
+
+    th {
+      color: #ffd45c;
+      background: rgba(255,255,255,.07);
+    }
+
+    .rank1 {
+      font-weight: bold;
+      color: #ffd45c;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .small {
+      color: #c9dded;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    @media(max-width:650px) {
+      .panel {
+        padding: 20px;
+      }
+
+      .podium {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- PANTALLA DE INICIO -->
+  <section id="startScreen" class="panel">
+
+    <div class="start-box">
+
+      <div class="gold" style="font-weight:bold;letter-spacing:2px;">
+        LIGA DEL FUTURO
+      </div>
+
+      <h1>🚀 Misión ABP</h1>
+
+      <p class="subtitle">
+        Demuestra cuánto sabes sobre el Aprendizaje Basado en Proyectos.
+        Primero se toma en cuenta el puntaje y, en caso de empate,
+        gana quien complete la misión en menor tiempo.
+      </p>
+
+      <label for="playerName">
+        Ingresa tu nombre
+      </label>
+
+      <input
+        id="playerName"
+        maxlength="30"
+        placeholder="Ejemplo: Andrea"
+        autocomplete="off"
+      >
+
+      <button id="startBtn" class="primary">
+        ▶ Empezar misión
+      </button>
+
+      <p class="small">
+        El cronómetro comenzará cuando presiones Empezar.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- PANTALLA DEL JUEGO -->
+  <section id="gameScreen" class="panel hidden">
+
+    <div class="topbar">
+
+      <div class="stat">
+        Jugador
+        <strong id="playerDisplay">-</strong>
+      </div>
+
+      <div class="stat">
+        Puntos
+        <strong id="scoreDisplay">0 ⭐</strong>
+      </div>
+
+      <div class="stat">
+        Tiempo
+        <strong id="timerDisplay">00:00</strong>
+      </div>
+
+    </div>
+
+    <div class="progress-wrap">
+      <div id="progress"></div>
+    </div>
+
+    <div id="game"></div>
+
+    <div id="feedback"></div>
+
+  </section>
+
+
+  <!-- PANTALLA DE RESULTADOS -->
+  <section id="resultsScreen" class="panel hidden">
+
+    <div class="result">
+
+      <div style="font-size:70px;">🏆</div>
+
+      <h1>¡Misión completada!</h1>
+
+      <p id="finalName"></p>
+
+      <div id="finalScore" class="big-score"></div>
+
+      <p id="finalTime"></p>
+
+    </div>
+
+    <h2>🏅 Podio actual</h2>
+
+    <div id="podium" class="podium"></div>
+
+    <h2 style="margin-top:28px;">
+      Clasificación general
+    </h2>
+
+    <p class="subtitle">
+      La clasificación se ordena primero por mayor puntaje y,
+      en caso de empate, por menor tiempo.
+    </p>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Posición</th>
+            <th>Jugador</th>
+            <th>Puntaje</th>
+            <th>Tiempo</th>
+          </tr>
+        </thead>
+
+        <tbody id="leaderboardBody"></tbody>
+
+      </table>
+
+    </div>
+
+    <div class="actions">
+
+      <button id="nextPlayerBtn" class="primary">
+        ▶ Siguiente jugador
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+  {
+    question:
+      "En una institución educativa se observa una gran cantidad de residuos. ¿Cuál sería el mejor punto de partida para desarrollar un proyecto mediante ABP?",
+
+    options: [
+      "Memorizar una definición sobre reciclaje.",
+      "Plantear una pregunta retadora sobre cómo reducir los residuos de la institución.",
+      "Realizar únicamente un examen sobre contaminación."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "El ABP inicia con un problema, reto o pregunta significativa que orienta el proyecto."
+  },
+
+  {
+    question:
+      "Después de identificar el problema, ¿qué deberían hacer los estudiantes?",
+
+    options: [
+      "Investigar las causas, recopilar información y analizar datos.",
+      "Esperar que el docente proporcione todas las respuestas.",
+      "Elegir una solución sin investigar."
+    ],
+
+    correct: 0,
+
+    explanation:
+      "Los estudiantes investigan, consultan fuentes y toman decisiones fundamentadas."
+  },
+
+  {
+    question:
+      "Durante el proyecto, ¿cuál es principalmente el rol del docente?",
+
+    options: [
+      "Realizar el proyecto por los estudiantes.",
+      "Guiar, orientar y ofrecer retroalimentación.",
+      "No participar en ninguna etapa."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "El docente funciona como facilitador y orientador del proceso."
+  },
+
+  {
+    question:
+      "¿Cuál sería una buena evidencia de aprendizaje?",
+
+    options: [
+      "Diseñar una propuesta para reducir los residuos basada en los datos investigados.",
+      "Copiar información de Internet.",
+      "Decir verbalmente que comprendieron el tema."
+    ],
+
+    correct: 0,
+
+    explanation:
+      "El ABP genera un producto o evidencia concreta que responde al reto planteado."
+  },
+
+  {
+    question:
+      "¿Cuál sería la mejor manera de finalizar el proyecto?",
+
+    options: [
+      "Guardar el proyecto sin compartirlo.",
+      "Presentar la propuesta, recibir retroalimentación y reflexionar sobre lo aprendido.",
+      "Realizar únicamente una prueba de memoria."
+    ],
+
+    correct: 1,
+
+    explanation:
+      "La presentación y la reflexión permiten valorar tanto el proceso como el resultado."
+  }
+
+];
+
+
+let playerName = "";
+let currentQuestion = 0;
+let score = 0;
+let startTime = null;
+let timerInterval = null;
+let finalSeconds = 0;
+let answered = false;
+
+
+const startScreen =
+  document.getElementById("startScreen");
+
+const gameScreen =
+  document.getElementById("gameScreen");
+
+const resultsScreen =
+  document.getElementById("resultsScreen");
+
+const playerInput =
+  document.getElementById("playerName");
+
+const playerDisplay =
+  document.getElementById("playerDisplay");
+
+const scoreDisplay =
+  document.getElementById("scoreDisplay");
+
+const timerDisplay =
+  document.getElementById("timerDisplay");
+
+const progress =
+  document.getElementById("progress");
+
+const game =
+  document.getElementById("game");
+
+const feedback =
+  document.getElementById("feedback");
+
+
+document
+  .getElementById("startBtn")
+  .addEventListener("click", startGame);
+
+document
+  .getElementById("nextPlayerBtn")
+  .addEventListener("click", nextPlayer);
+
+
+function startGame() {
+
+  const name =
+    playerInput.value.trim();
+
+  if (!name) {
+
+    alert("Por favor escribe tu nombre antes de comenzar.");
+
+    return;
+
+  }
+
+  playerName = name;
+
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
+
+  scoreDisplay.textContent =
+    "0 ⭐";
+
+  playerDisplay.textContent =
+    playerName;
+
+  timerDisplay.textContent =
+    "00:00";
+
+  startScreen.classList.add("hidden");
+  resultsScreen.classList.add("hidden");
+  gameScreen.classList.remove("hidden");
+
+  startTime = Date.now();
+
+  timerInterval =
+    setInterval(updateTimer, 250);
+
+  loadQuestion();
+
+}
+
+
+function updateTimer() {
+
+  const seconds =
+    Math.floor(
+      (Date.now() - startTime) / 1000
+    );
+
+  timerDisplay.textContent =
+    formatTime(seconds);
+
+}
+
+
+function formatTime(totalSeconds) {
+
+  const minutes =
+    Math.floor(totalSeconds / 60);
+
+  const seconds =
+    totalSeconds % 60;
+
+  return (
+    String(minutes).padStart(2, "0")
+    + ":"
+    + String(seconds).padStart(2, "0")
+  );
+
+}
+
+
+function loadQuestion() {
+
+  answered = false;
+
+  feedback.innerHTML = "";
+
+  if (currentQuestion >= questions.length) {
+
+    finishGame();
+
+    return;
+
+  }
+
+  progress.style.width =
+    (
+      currentQuestion /
+      questions.length
+      * 100
+    ) + "%";
+
+  const q =
+    questions[currentQuestion];
+
+  let optionsHTML = "";
+
+  q.options.forEach(
+    (option,index) => {
+
+      optionsHTML += `
+        <button
+          class="option"
+          data-index="${index}"
+        >
+          ${String.fromCharCode(65 + index)}.
+          ${option}
+        </button>
+      `;
+
+    }
+  );
+
+  game.innerHTML = `
+
+    <div class="gold"
+         style="font-weight:bold;">
+      MISIÓN
+      ${currentQuestion + 1}
+      DE
+      ${questions.length}
+    </div>
+
+    <div class="question">
+      ${q.question}
+    </div>
+
+    <div class="options">
+      ${optionsHTML}
+    </div>
+
+  `;
+
+
+  document
+    .querySelectorAll(".option")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        function() {
+
+          checkAnswer(
+            Number(this.dataset.index),
+            this
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+function checkAnswer(selected, selectedButton) {
+
+  if (answered) return;
+
+  answered = true;
+
+  const q =
+    questions[currentQuestion];
+
+  const buttons =
+    document.querySelectorAll(".option");
+
+  buttons.forEach(
+    button => button.disabled = true
+  );
+
+
+  if (selected === q.correct) {
+
+    score += 100;
+
+    scoreDisplay.textContent =
+      score + " ⭐";
+
+    selectedButton
+      .classList.add("correct");
+
+    feedback.innerHTML = `
+
+      <div class="feedback">
+
+        <strong>
+          ✅ ¡Correcto! +100 puntos
+        </strong>
+
+        <br><br>
+
+        ${q.explanation}
+
+      </div>
+
+    `;
+
+  }
+
+  else {
+
+    selectedButton
+      .classList.add("incorrect");
+
+    buttons[q.correct]
+      .classList.add("correct");
+
+    feedback.innerHTML = `
+
+      <div class="feedback">
+
+        <strong>
+          ❌ Respuesta incorrecta
+        </strong>
+
+        <br><br>
+
+        ${q.explanation}
+
+      </div>
+
+    `;
+
+  }
+
+
+  const nextBtn =
+    document.createElement("button");
+
+  nextBtn.className =
+    "primary";
+
+  nextBtn.textContent =
+    currentQuestion === questions.length - 1
+      ? "Ver resultados 🏆"
+      : "Siguiente misión →";
+
+
+  nextBtn.addEventListener(
+    "click",
+    function() {
+
+      currentQuestion++;
+
+      loadQuestion();
+
+    }
+  );
+
+
+  feedback.appendChild(nextBtn);
+
+}
+
+
+function finishGame() {
+
+  clearInterval(timerInterval);
+
+  finalSeconds =
+    Math.floor(
+      (Date.now() - startTime) / 1000
+    );
+
+  progress.style.width =
+    "100%";
+
+
+  const result = {
+
+    name: playerName,
+    score: score,
+    seconds: finalSeconds
+
+  };
+
+
+  saveResult(result);
+
+
+  gameScreen.classList.add("hidden");
+
+  resultsScreen.classList.remove("hidden");
+
+
+  document
+    .getElementById("finalName")
+    .textContent =
+      "Jugador: " + playerName;
+
+
+  document
+    .getElementById("finalScore")
+    .textContent =
+      score + " / 500 ⭐";
+
+
+  document
+    .getElementById("finalTime")
+    .textContent =
+      "Tiempo: "
+      + formatTime(finalSeconds);
+
+
+  showLeaderboard();
+
+}
+
+
+function saveResult(result) {
+
+  let results =
+    JSON.parse(
+      localStorage.getItem("ligaFuturoResults")
+      || "[]"
+    );
+
+  results.push(result);
+
+  localStorage.setItem(
+    "ligaFuturoResults",
+    JSON.stringify(results)
+  );
+
+}
+
+
+function getSortedResults() {
+
+  let results =
+    JSON.parse(
+      localStorage.getItem("ligaFuturoResults")
+      || "[]"
+    );
+
+
+  results.sort(
+    function(a,b) {
+
+      if (b.score !== a.score) {
+
+        return b.score - a.score;
+
+      }
+
+      return a.seconds - b.seconds;
+
+    }
+  );
+
+
+  return results;
+
+}
+
+
+function showLeaderboard() {
+
+  const results =
+    getSortedResults();
+
+
+  const podium =
+    document.getElementById("podium");
+
+  podium.innerHTML = "";
+
+
+  const medals =
+    ["🥇","🥈","🥉"];
+
+
+  for (let i = 0; i < 3; i++) {
+
+    if (!results[i]) {
+
+      podium.innerHTML += `
+
+        <div class="podium-card">
+
+          <div class="medal">
+            ${medals[i]}
+          </div>
+
+          <div class="name">
+            Disponible
+          </div>
+
+          <div class="data">
+            Esperando participante
+          </div>
+
+        </div>
+
+      `;
+
+      continue;
+
+    }
+
+
+    podium.innerHTML += `
+
+      <div class="podium-card">
+
+        <div class="medal">
+          ${medals[i]}
+        </div>
+
+        <div class="name">
+          ${escapeHTML(results[i].name)}
+        </div>
+
+        <div class="data">
+
+          ${results[i].score} puntos
+
+          <br>
+
+          ${formatTime(results[i].seconds)}
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  const tbody =
+    document.getElementById("leaderboardBody");
+
+  tbody.innerHTML = "";
+
+
+  results.forEach(
+    function(result,index) {
+
+      const row =
+        document.createElement("tr");
+
+
+      let position =
+        index + 1;
+
+      if (index === 0)
+        position = "🥇";
+
+      else if (index === 1)
+        position = "🥈";
+
+      else if (index === 2)
+        position = "🥉";
+
+
+      row.innerHTML = `
+
+        <td class="${index === 0 ? "rank1" : ""}">
+          ${position}
+        </td>
+
+        <td>
+          ${escapeHTML(result.name)}
+        </td>
+
+        <td>
+          ${result.score}
+        </td>
+
+        <td>
+          ${formatTime(result.seconds)}
+        </td>
+
+      `;
+
+
+      tbody.appendChild(row);
+
+    }
+  );
+
+}
+
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+function nextPlayer() {
+
+  playerInput.value = "";
+
+  playerName = "";
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
+
+  resultsScreen.classList.add("hidden");
+
+  gameScreen.classList.add("hidden");
+
+  startScreen.classList.remove("hidden");
+
+  playerInput.focus();
+
+}
+
+</script>
+
+</body>
+</html>
